@@ -1,0 +1,433 @@
+:root {
+  --ink: #1b140f;
+  --paper: #f4e7d0;
+  --paper-2: #efe0c4;
+  --red: #d63a2f;
+  --red-dark: #a82822;
+  --line: #2a2118;
+  --muted: #6d5c4b;
+  --stage: #100e0c;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at top left, #3a2a22 0, transparent 28rem),
+    var(--ink);
+  color: var(--paper);
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+}
+
+/* Fit-to-window layout: header, then the player takes whatever height is left,
+   then the control cards. The body only scrolls if the window is too small. */
+body {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem clamp(0.85rem, 2vw, 1.5rem) 0.85rem;
+}
+
+.top {
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto 0.45rem;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: 0.9rem;
+  row-gap: 0.1rem;
+}
+
+.eyebrow {
+  margin: 0;
+  order: 2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: #e7b15a;
+}
+
+h1 {
+  margin: 0;
+  font-family: "Avenir Next Condensed", "Arial Narrow", "Avenir Next", sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.7rem, 2.6vw, 2.2rem);
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+}
+
+.lede {
+  order: 3;
+  margin: 0;
+  color: #f0dcc0;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+main {
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  min-height: 0;
+}
+
+.panel, .stage {
+  background: var(--paper);
+  color: var(--ink);
+  border: 3px solid #0e0b09;
+  box-shadow: 6px 6px 0 #0e0b09;
+}
+
+/* The settings panel is a grid of cards under the player. */
+.panel {
+  flex: 0 0 auto;
+  padding: 0.6rem;
+  display: grid;
+  gap: 0.6rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    "source style"
+    "output style"
+    "look   preview"
+    "render render";
+  align-items: stretch;
+}
+
+.card {
+  min-width: 0;
+  background: var(--paper-2);
+  border: 2px solid var(--line);
+  padding: 0.5rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+}
+
+.card-source { grid-area: source; }
+.card-style { grid-area: style; }
+.card-output { grid-area: output; }
+.card-look { grid-area: look; justify-content: space-between; }
+.card-preview { grid-area: preview; }
+.card-render { grid-area: render; }
+/* Music sits in the render column, which has spare height beside the style card. */
+#music, #music-mix {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.28rem;
+}
+#music {
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.22rem;
+}
+#music button, #music-mix button {
+  min-width: 0;
+  padding: 0.22rem 0.1rem;
+  font-size: 0.66rem;
+  line-height: 1.15;
+}
+#mix-wrap.is-off legend { opacity: 0.45; }
+.voice-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.15fr;
+  gap: 0.22rem;
+  margin-top: 0.28rem;
+}
+.voice-bar button {
+  min-width: 0;
+  padding: 0.16rem 0.08rem;
+  font-size: 0.64rem;
+  line-height: 1.15;
+}
+.voice-bar button.on { background: var(--ink); color: var(--paper); }
+.voice-bar button:disabled { opacity: 0.45; cursor: default; }
+.card-render .hint { font-size: 0.75rem; line-height: 1.25; margin-top: 0.2rem; min-height: 1.15em; }
+.lyrics-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(16, 12, 8, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.lyrics-modal[hidden] { display: none; }
+.lyrics-card {
+  width: min(26rem, 100%);
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--line);
+  padding: 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.lyrics-card textarea {
+  width: 100%;
+  resize: none;
+  border: 2px solid var(--line);
+  background: #fffaf2;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  padding: 0.4rem 0.45rem;
+}
+
+@media (min-width: 900px) {
+  .panel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr);
+    grid-template-areas:
+      "source style look"
+      "output style preview"
+      "render render render";
+  }
+}
+
+@media (min-width: 1200px) {
+  .panel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 0.9fr);
+    grid-template-areas:
+      "source style look    render"
+      "output style preview render";
+  }
+}
+
+.path-row, .actions, .stage-bar, .stage-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: end;
+}
+
+.field { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.82rem; font-weight: 600; }
+.grow { flex: 1; }
+
+input[type="text"] {
+  width: 100%;
+  border: 2px solid var(--line);
+  background: #fffaf2;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  padding: 0.55rem 0.6rem;
+}
+
+button, .stage-actions a {
+  border: 2px solid var(--line);
+  background: #fffaf2;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  padding: 0.55rem 0.75rem;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.path-row button { flex-shrink: 0; }
+
+button:hover, .stage-actions a:hover { background: #fff; }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+button.primary { background: var(--red); color: #fffaf2; border-color: var(--red-dark); }
+button.primary:hover:not(:disabled) { background: var(--red-dark); }
+button.ghost { background: transparent; }
+
+.drop {
+  border: 2px dashed #8a7058;
+  padding: 0.3rem;
+  text-align: center;
+  color: var(--muted);
+  background: var(--paper-2);
+}
+
+.drop.hot { border-color: var(--red); color: var(--ink); background: #fff; }
+
+.meta, .status, .saved, .hint {
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+.meta { min-height: 1.15rem; margin: 0; }
+.hint { margin: 0.15rem 0 0; }
+.hint.quiet { display: none; }
+
+
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+legend { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.22rem; padding: 0; }
+
+.options { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+/* Six styles: two rows of three, so the names stay readable in a narrow card. */
+#style { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.3rem; }
+#style button { min-width: 0; padding: 0.34rem 0.12rem; font-size: 0.78rem; overflow: hidden; text-overflow: ellipsis; }
+.options button { min-width: 3rem; padding: 0.4rem 0.55rem; }
+.options button.on { background: var(--ink); color: var(--paper); }
+/* Frame rate and width share one row each, so the cards stay short. */
+#fps, #width { flex-wrap: nowrap; }
+#fps button, #width button { flex: 1 1 0; min-width: 0; padding-left: 0.2rem; padding-right: 0.2rem; }
+
+#palette-wrap[hidden], #palette-mode[hidden], #fractal-wrap[hidden], .style-opts[hidden] { display: none; }
+/* Options of the newer styles: short single-choice rows (or toggles), same buttons as the palette. */
+.style-opts { display: flex; flex-direction: column; gap: 0.45rem; }
+.style-opts .options button { display: inline-flex; align-items: center; justify-content: center; gap: 0.35rem; flex: 1 1 0; font-size: 0.78rem; padding: 0.35rem 0.5rem; }
+.fx.neon-rainbow { background: linear-gradient(90deg, #ff2d95, #ff8a00, #ffe600, #00ff9c, #00d9ff, #7a5cff); }
+.fx.neon-pinkcyan { background: linear-gradient(90deg, #ff2bd6, #00e5ff); }
+.fx.neon-single { background: radial-gradient(ellipse at center, #eaffff 0 18%, #00f0ff 45%, #06131a 85%); }
+.slider.off { opacity: 0.45; }
+#palette button { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; padding: 0.35rem 0.5rem; }
+#palette-mode { margin-top: 0.35rem; }
+.card-style { gap: 0.45rem; }
+#palette-mode button { flex: 1; padding: 0.35rem 0.5rem; font-size: 0.78rem; }
+#fractal button { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; padding: 0.35rem 0.5rem; }
+.fx { display: inline-block; width: 1.4rem; height: 0.8rem; border: 1px solid var(--line); flex-shrink: 0; }
+.fx.tendrils { background: repeating-linear-gradient(60deg, #1b140f 0 2px, #cfe4ff 2px 3px, #1b140f 3px 6px); }
+.fx.fill { background: repeating-radial-gradient(circle at 30% 60%, #d63a2f 0 2px, #e7b15a 2px 4px, #2f6fb0 4px 6px); }
+.fx.echo { background: radial-gradient(circle, #e7b15a 0 18%, #1b140f 19% 30%, #e7b15a 31% 42%, #1b140f 43% 56%, #e7b15a 57% 70%, #1b140f 71%); }
+.fx.glow { background: radial-gradient(ellipse at center, #fffaf2 0 20%, #7fd1ff 45%, #1b140f 80%); }
+.swatches { display: inline-flex; border: 1px solid var(--line); flex-shrink: 0; }
+.swatches i { display: block; width: 0.42rem; height: 0.8rem; }
+.swatches.original i {
+  width: 1.4rem;
+  background: linear-gradient(90deg, #d63a2f, #e7b15a, #3f8f5a, #2f6fb0);
+}
+
+.slider { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.82rem; font-weight: 700; }
+.slider strong { font-weight: 600; color: var(--muted); }
+
+input[type="range"] { width: 100%; accent-color: var(--red); }
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.05rem 0 0;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+.check input { width: 1rem; height: 1rem; margin: 0; accent-color: var(--red); }
+
+.length { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+.length-field { display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; font-weight: 700; }
+.length-field .unit { font-weight: 600; color: var(--muted); }
+input[type="number"] {
+  width: 5.5rem;
+  border: 2px solid var(--line);
+  background: #fffaf2;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  padding: 0.3rem 0.45rem;
+}
+input[type="number"]:disabled { opacity: 0.55; }
+.length .check { margin: 0; }
+/* The length hint stays visible on small screens too: it is the only place the clip's max is shown. */
+.hint.length-hint { display: block; margin-top: 0; }
+
+.actions { flex-wrap: wrap; }
+.actions button { flex: 1; }
+
+.progress {
+  height: 0.7rem;
+  border: 2px solid var(--line);
+  background: #fffaf2;
+}
+
+.progress div {
+  height: 100%;
+  width: 0;
+  background: var(--red);
+}
+
+.status { min-height: 1.2rem; margin: 0; }
+.status.bad { color: var(--red-dark); }
+
+/* The player spans the full width and takes the height left over by the header
+   and the cards. The video keeps its aspect ratio inside (letterboxed). */
+.stage {
+  flex: 1 1 0;
+  min-height: 15rem;
+  background: var(--stage);
+  color: var(--paper);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+.screen {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: #000;
+  border: 2px solid #2a241e;
+}
+video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+.stage-bar {
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.stage-bar:has(.saved:empty):has(#download[hidden]) { display: none; }
+
+.saved {
+  margin: 0;
+  flex: 1 1 10rem;
+  min-width: 0;
+  word-break: break-all;
+  font-size: 0.8rem;
+  line-height: 1.3;
+}
+
+.stage-actions a, #reveal {
+  white-space: nowrap;
+  padding: 0.4rem 0.65rem;
+}
+.stage-actions [hidden] { display: none; }
+.stage-actions { flex-wrap: wrap; flex: 1 1 auto; justify-content: flex-end; }
+.stage-actions a, .stage-actions button { flex: 1 1 auto; text-align: center; }
+
+/* Short windows: stop fitting to the height and let the page scroll,
+   with the player at a normal 16:9 size. */
+@media (max-height: 620px), (max-width: 899px) {
+  .stage { flex: 0 0 auto; min-height: 0; }
+  .screen { flex: none; aspect-ratio: 16 / 9; max-height: 70vh; }
+}
+
+@media (max-width: 860px) {
+  body { padding: 0.6rem 0.75rem 1rem; }
+  h1 { font-size: 1.8rem; }
+  .top { margin-bottom: 0.4rem; }
+  .lede { font-size: 0.86rem; }
+  .hint { display: none; }
+  .options button { padding: 0.38rem 0.45rem; }
+  .path-row, .actions { flex-direction: column; align-items: stretch; }
+  .actions button, .stage-actions a, #reveal { width: 100%; flex: 1 0 auto; text-align: center; }
+}
+
+@media (max-width: 560px) {
+  .panel {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "source" "style" "output" "look" "preview" "render";
+  }
+  #style button { font-size: 0.72rem; }
+}

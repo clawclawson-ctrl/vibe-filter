@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Rendered output and scratch files
+*.mp4
+*.mov
+*.m4v
+*.webm
+*.mkv
+*-music.wav
+*-palette-*.ppm
+output/
+outputs/
+exports/
+uploads/
+tmp/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment and secrets
+.env
+.env.*
+
+# OS / editor clutter
+.DS_Store
+._*
+Thumbs.db
+.vscode/
+.idea/

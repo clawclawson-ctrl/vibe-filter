@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vibe Filter</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="top">
+    <p class="eyebrow">Local filter</p>
+    <h1>Vibe Filter</h1>
+    <p class="lede">Classic cel, fractal, neon, VHS, pixel art or oil paint. Keep the soundtrack, or leave it out.</p>
+  </header>
+
+  <main>
+    <section class="stage" aria-label="Result">
+      <div class="screen">
+        <video id="player" controls playsinline></video>
+      </div>
+    </section>
+
+    <section class="panel" aria-label="Source and settings">
+      <div class="card card-source" aria-label="Source">
+        <div class="path-row">
+          <label class="field grow">
+            <span>Video</span>
+            <input id="path" type="text" placeholder="/path/to/clip.mp4" spellcheck="false" autocomplete="off">
+          </label>
+          <button id="choose" type="button">Choose…</button>
+        </div>
+        <div id="drop" class="drop" tabindex="0">Drop a video here</div>
+        <p id="meta" class="meta">No clip loaded.</p>
+      </div>
+
+      <div class="card card-style">
+        <fieldset>
+          <legend>Style</legend>
+          <div class="options" id="style">
+            <button type="button" data-value="classic" class="on">Classic</button>
+            <button type="button" data-value="fractal">Fractal</button>
+            <button type="button" data-value="neon">Neon Edges</button>
+            <button type="button" data-value="vhs">VHS Retro</button>
+            <button type="button" data-value="pixel">Pixel Art</button>
+            <button type="button" data-value="oil">Oil Paint</button>
+          </div>
+          <p class="hint" id="style-hint">Flat cel colors and an even ink line, like a 1950s short.</p>
+        </fieldset>
+        <fieldset id="palette-wrap">
+          <legend>Palette</legend>
+          <div class="options" id="palette">
+            <button type="button" data-value="original" class="on" aria-pressed="true"><span class="swatches original"><i></i></span>Original</button>
+            <button type="button" data-value="vintage" aria-pressed="false"><span class="swatches"><i style="background:#f0e2be"></i><i style="background:#d6a634"></i><i style="background:#aa4030"></i><i style="background:#2e7a78"></i><i style="background:#543422"></i><i style="background:#1e1a16"></i></span>Vintage Cartoon</button>
+            <button type="button" data-value="gameboy" aria-pressed="false"><span class="swatches"><i style="background:#0f380f"></i><i style="background:#306230"></i><i style="background:#8bac0f"></i><i style="background:#9bbc0f"></i></span>Game Boy</button>
+            <button type="button" data-value="noir" aria-pressed="false"><span class="swatches"><i style="background:#000000"></i><i style="background:#464646"></i><i style="background:#878787"></i><i style="background:#c8c8c8"></i><i style="background:#ffffff"></i></span>Noir</button>
+            <button type="button" data-value="popart" aria-pressed="false"><span class="swatches"><i style="background:#e61e28"></i><i style="background:#ffdc00"></i><i style="background:#1446c8"></i><i style="background:#000000"></i><i style="background:#ffffff"></i></span>Pop Art</button>
+            <button type="button" data-value="pastel" aria-pressed="false"><span class="swatches"><i style="background:#f8c8d6"></i><i style="background:#beecd4"></i><i style="background:#d2c4f0"></i><i style="background:#badaf5"></i><i style="background:#fceeaa"></i><i style="background:#fff8e6"></i></span>Pastel</button>
+            <button type="button" data-value="sunset" aria-pressed="false"><span class="swatches"><i style="background:#3c1658"></i><i style="background:#c82882"></i><i style="background:#f57828"></i><i style="background:#fabe3c"></i><i style="background:#141838"></i></span>Sunset</button>
+          </div>
+          <div class="options" id="palette-mode" hidden>
+            <button type="button" data-value="combine" class="on">Combine</button>
+            <button type="button" data-value="mix">Mix</button>
+          </div>
+          <p class="hint" id="palette-hint">Turn on one or more. Original keeps the clip's own colors.</p>
+        </fieldset>
+        <fieldset id="fractal-wrap" hidden>
+          <legend>Fractal</legend>
+          <div class="options" id="fractal">
+            <button type="button" data-value="tendrils" aria-pressed="false"><span class="fx tendrils"></span>Tendrils</button>
+            <button type="button" data-value="fill" aria-pressed="false"><span class="fx fill"></span>Fill</button>
+            <button type="button" data-value="echo" aria-pressed="false"><span class="fx echo"></span>Echo</button>
+            <button type="button" data-value="glow" class="on" aria-pressed="true"><span class="fx glow"></span>Glow</button>
+          </div>
+          <p class="hint" id="fractal-hint">Turn on any mix. Effects grow from the edges found in each frame.</p>
+        </fieldset>
+        <div class="style-opts" id="neon-wrap" hidden>
+          <fieldset>
+            <legend>Neon color</legend>
+            <div class="options" id="neon-color">
+              <button type="button" data-value="rainbow" class="on"><span class="fx neon-rainbow"></span>Rainbow</button>
+              <button type="button" data-value="pinkcyan"><span class="fx neon-pinkcyan"></span>Pink-Cyan</button>
+              <button type="button" data-value="single"><span class="fx neon-single"></span>Single</button>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Glow</legend>
+            <div class="options" id="neon-glow">
+              <button type="button" data-value="low">Low</button>
+              <button type="button" data-value="medium" class="on">Medium</button>
+              <button type="button" data-value="high">High</button>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Background</legend>
+            <div class="options" id="neon-bg">
+              <button type="button" data-value="dark">Dark</button>
+              <button type="button" data-value="medium" class="on">Medium</button>
+              <button type="button" data-value="bright">Bright</button>
+            </div>
+          </fieldset>
+        </div>
+        <fieldset class="style-opts" id="vhs-wrap" hidden>
+          <legend>VHS</legend>
+          <div class="options" id="vhs">
+            <button type="button" data-value="scanlines" class="on" aria-pressed="true">Scanlines</button>
+            <button type="button" data-value="wobble" class="on" aria-pressed="true">Wobble</button>
+            <button type="button" data-value="grain" class="on" aria-pressed="true">Grain</button>
+          </div>
+          <p class="hint" id="vhs-hint">Turn any off. The washed tape colors and color bleed always stay.</p>
+        </fieldset>
+        <div class="style-opts" id="pixel-wrap" hidden>
+          <fieldset>
+            <legend>Pixel size</legend>
+            <div class="options" id="pixel-size">
+              <button type="button" data-value="small">Small</button>
+              <button type="button" data-value="medium" class="on">Medium</button>
+              <button type="button" data-value="large">Large</button>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Colors</legend>
+            <div class="options" id="pixel-colors">
+              <button type="button" data-value="rich" class="on">Rich</button>
+              <button type="button" data-value="retro16"><span class="swatches"><i style="background:#1a1c2c"></i><i style="background:#b13e53"></i><i style="background:#ffcd75"></i><i style="background:#38b764"></i><i style="background:#3b5dc9"></i><i style="background:#73eff7"></i></span>Retro 16</button>
+            </div>
+          </fieldset>
+          <p class="hint">Big square pixels. Retro 16 uses a fixed 16-color game palette.</p>
+        </div>
+        <fieldset class="style-opts" id="oil-wrap" hidden>
+          <legend>Strength</legend>
+          <div class="options" id="oil-strength">
+            <button type="button" data-value="light">Light</button>
+            <button type="button" data-value="medium" class="on">Medium</button>
+            <button type="button" data-value="strong">Strong</button>
+          </div>
+          <p class="hint">Stronger means bigger patches and bolder strokes. Slower than Classic.</p>
+        </fieldset>
+      </div>
+
+      <div class="card card-output">
+        <fieldset>
+          <legend>Frame rate</legend>
+          <div class="options" id="fps">
+            <button type="button" data-value="8">8</button>
+            <button type="button" data-value="10">10</button>
+            <button type="button" data-value="12" class="on">12</button>
+            <button type="button" data-value="15">15</button>
+            <button type="button" data-value="24">24</button>
+          </div>
+          <p class="hint quiet">Fewer frames per second means longer holds.</p>
+        </fieldset>
+        <fieldset>
+          <legend>Width</legend>
+          <div class="options" id="width">
+            <button type="button" data-value="640">640</button>
+            <button type="button" data-value="960" class="on">960</button>
+            <button type="button" data-value="1280">1280</button>
+            <button type="button" data-value="1920">1920</button>
+            <button type="button" data-value="0">Full</button>
+          </div>
+          <p class="hint quiet">Smaller frames read more like a cel and render faster.</p>
+        </fieldset>
+        <label class="check" for="mute">
+          <input id="mute" type="checkbox">
+          <span>Omit audio</span>
+        </label>
+      </div>
+
+      <div class="card card-look" aria-label="Look">
+        <label class="slider">
+          <span><span id="simplify-name">Simplify</span> <strong id="simplify-val">6 shades</strong></span>
+          <input id="simplify" type="range" min="0" max="100" value="50">
+        </label>
+        <label class="slider">
+          <span><span id="outline-name">Outline</span> <strong id="outline-val">Medium</strong></span>
+          <input id="outline" type="range" min="0" max="4" step="1" value="2">
+        </label>
+        <label class="slider">
+          <span>Color <strong id="saturation-val">1.50</strong></span>
+          <input id="saturation" type="range" min="0.6" max="2" step="0.05" value="1.5">
+        </label>
+      </div>
+
+      <div class="card card-preview" aria-label="Preview range">
+        <label class="slider" id="start-wrap">
+          <span>Preview start <strong id="start-val">0:00</strong></span>
+          <input id="start" type="range" min="0" max="0" step="0.1" value="0" disabled>
+        </label>
+        <div class="length" id="length-wrap">
+          <label class="length-field" for="length">
+            <span>Preview length</span>
+            <input id="length" type="number" min="1" step="1" value="10" inputmode="decimal" disabled>
+            <span class="unit">s</span>
+          </label>
+          <label class="check" for="length-full">
+            <input id="length-full" type="checkbox" disabled>
+            <span>Full clip</span>
+          </label>
+        </div>
+        <p class="hint length-hint" id="length-hint">Load a clip to see its length.</p>
+      </div>
+
+      <div class="card card-render" aria-label="Render">
+        <fieldset>
+          <legend>Music</legend>
+          <div class="options" id="music">
+            <button type="button" data-value="off" class="on">Off</button>
+            <button type="button" data-value="ambient">Ambient</button>
+            <button type="button" data-value="lofi">Lo-fi Chill</button>
+            <button type="button" data-value="arp">Dreamy Arp</button>
+            <button type="button" data-value="synthwave">Synthwave</button>
+          </div>
+        </fieldset>
+        <fieldset id="mix-wrap">
+          <legend>Mix</legend>
+          <div class="options" id="music-mix">
+            <button type="button" data-value="replace" class="on" disabled>Replace</button>
+            <button type="button" data-value="blend" disabled>Blend</button>
+          </div>
+          <div class="voice-bar" id="voice-bar">
+            <button type="button" id="oohaah" aria-pressed="false" disabled>Ooh-aah</button>
+            <button type="button" id="lyrics-on" aria-pressed="false" disabled>Lyrics</button>
+            <button type="button" id="lyrics-edit" disabled>Edit lyrics…</button>
+          </div>
+          <p class="hint" id="music-hint">Off leaves the soundtrack as it is.</p>
+        </fieldset>
+        <div class="actions">
+          <button id="preview" type="button" class="primary" disabled>Preview 10 seconds</button>
+          <button id="export" type="button" disabled>Export full clip</button>
+          <button id="cancel" type="button" class="ghost" hidden>Cancel</button>
+        </div>
+        <div class="progress" hidden id="progress-wrap">
+          <div id="progress"></div>
+        </div>
+        <p id="status" class="status" role="status"></p>
+        <div class="stage-bar">
+          <p id="saved" class="saved"></p>
+          <div class="stage-actions">
+            <a id="download" hidden download>Download</a>
+            <button id="reveal" type="button" hidden>Show in Finder</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div id="lyrics-modal" class="lyrics-modal" hidden>
+    <div class="lyrics-card" role="dialog" aria-modal="true" aria-labelledby="lyrics-label">
+      <label id="lyrics-label" for="lyrics-text">Lyrics</label>
+      <textarea id="lyrics-text" rows="6" maxlength="4000" placeholder="One line of the song per line"></textarea>
+      <button type="button" id="lyrics-close">Done</button>
+    </div>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>
